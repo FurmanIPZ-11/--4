@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+#include <locale.h> // Підключення бібліотеки для роботи з локаллю
+using namespace std;
+
+// Базовий клас "Об'єкт"
+class Object {
+public:
+    virtual void print() = 0; // Віртуальний метод виводу на екран
+};
+
+// Похідний клас "Місто", який наслідує базовий клас "Об'єкт"
+class City : public Object {
+private:
+    string name;
+    int population;
+public:
+    City(string name, int population) {
+        this->name = name;
+        this->population = population;
+    }
+    string getName() {
+        return name;
+    }
+    int getPopulation() {
+        return population;
+    }
+    void print() override { // Реалізація віртуального методу виводу на екран
+        cout << name << " - " << population << " жителів" << endl;
+    }
+};
+
+// Похідний клас "Область", який наслідує базовий клас "Об'єкт"
+class Region : public Object {
+private:
+    string name;
+    vector<City*> cities; // Вектор міст у області
+public:
+    Region(string name) {
+        this->name = name;
+    }
+    string getName() {
+        return name;
+    }
+    void addCity(City* city) {
+        cities.push_back(city);
+    }
+    void print() override { // Реалізація віртуального методу виводу на екран
+        cout << "Область " << name << ":" << endl;
+        for (auto it = cities.begin(); it != cities.end(); it++) {
+            (*it)->print(); // Виклик віртуального методу print() для кожного міста в області
+        }
+    }
+};
+
+int main() {
+    // Зміна локалі на українську
+    setlocale(LC_ALL, "ukr");
+
+    Region* region = new Region("Київська область");
+    region->addCity(new City("Київ", 2804000));
+    region->addCity(new City("Бориспіль", 59468));
+    region->addCity(new City("Васильків", 38053));
+
+    region->print(); // Виклик віртуального методу print() для області
+
+    delete region;
+    return 0;
+}
